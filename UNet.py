@@ -1,8 +1,8 @@
 import cv2
 import glob
 import numpy as np
-from keras.layers import Conv2D, MaxPooling2D, Dropout, Conv2DTranspose, concatenate
-from keras import backend as Input
+from keras.layers import Conv2D, MaxPooling2D, Dropout, Conv2DTranspose, concatenate, Input
+from keras import backend as K
 from keras.models import Model
 
 #Load image files from directory
