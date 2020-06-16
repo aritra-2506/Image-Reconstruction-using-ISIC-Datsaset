@@ -4,6 +4,8 @@ import numpy as np
 from keras.layers import Conv2D, MaxPooling2D, Dropout, Conv2DTranspose, concatenate, Input
 from keras import backend as K
 from keras.models import Model
+from keras.utils import plot_model
+import matplotlib.pyplot as plt
 
 #Load image files from directory
 filenames = glob.glob("C:/Users/Aritra Mazumdar/Downloads/ISIC/img/*.jpg")
@@ -18,7 +20,8 @@ images=np.asarray(X)
 images = images.astype('float32') / 255
 
 #Train-Test split
-images_train=images[0:5000]
+images_train=images[0:4000]
+images_val=images[4000:5000]
 images_test=images[5000:6007]
 
 #Buliding Network
@@ -83,5 +86,42 @@ autoencoder.fit(images_train, images_train,
 epochs=40,
 batch_size=50,
 shuffle=True,
-validation_data=(images_test, images_test),
+validation_data=(images_val, images_val),
 )
+
+plot_model(model, to_file='model.png')
+
+test_loss, test_acc = model.evaluate(test_images, test_labels)
+print('Test loss:', test_loss)
+print('Test accuracy:', test_acc)
+
+#Plot Accuracy
+f=plt.figure(1)
+plt.plot(autoencoder.history['acc'])
+plt.plot(autoencoder.history['val_acc'])
+plt.title('Model accuracy')
+plt.ylabel('Accuracy')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Val'], loc='upper left')
+f.show()
+
+#Plot Loss
+g=plt.figure(2)
+plt.plot(hist.history['loss'])
+plt.plot(hist.history['val_loss'])
+plt.title('Model loss')
+
+plt.ylabel('Loss')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Val'], loc='upper right')
+g.show()
+
+y_pred = model.predict(test_images)
+
+plt1.figure()
+plt.subplot(2, 1, 1)
+plt.title('Original Image')
+plt.imshow(test_images[100])
+plt.subplot(2, 1, 2)
+plt.title('Reconstructed Image')
+plt.imshow(y_pred[100])
